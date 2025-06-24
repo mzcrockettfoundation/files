@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .brush{
+        position:absolute;
+        width:15px;
+        height:15px;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+      <script>
+        function createBrush(x,y){
+          let brush=document.createElement('div');
+          brush.classList.add("brush");
+          document.body.appendChild(brush);
+          
+          brush.style.left=""+x+"px";
+          brush.style.top=""+y+"px";
+        }
+        
+        document.addEventListener("mousemove",(event)=>{
+          createBrush(event.clientX,event.clientY);
+        })
+      </script>
+  </body>
+</html>
