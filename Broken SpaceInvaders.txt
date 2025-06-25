@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        #player {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #00FF00;
+            transform: translateX(-50%);
+        }
+
+        .enemy, .bullet {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+        }
+
+        .enemy {
+            background-color: #FF0000;
+        }
+
+        .bullet {
+            width: 5px;
+            height: 10px;
+            background-color: #FFFF00;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #FFF;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameArea">
+        <div id="player"></div>
+        <div id="score">Score: 0</div>
+    </div>
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const player = document.getElementById('player');
+        const scoreDisplay = document.getElementById('score');
+        let playerX = gameArea.offsetWidth / 2;
+        let gameOver = false;
+        let enemies = [];
+        let bullets = [];
+        let score = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '')
+            { 
+              playerX -= 20
+              
+            };
+            if (e.key === '')
+            {
+              playerX += 20
+              
+            };
+            if (e.key === ' ')
+            {
+              
+            };
+            player.style.left = playerX + 'px';
+        });
+
+        function createEnemy() {
+            if (!gameOver) {
+                const enemy = document.createElement('div');
+                enemy.classList.add('enemy');
+                enemy.style.top = '0px';
+                enemy.style.left = Math.random() * gameArea.offsetWidth + 'px';
+                gameArea.appendChild(enemy);
+                enemies.push(enemy);
+            }
+        }
+
+        function moveEnemies() {
+            enemies.forEach((enemy, index) => {
+                let enemyY = parseInt(enemy.style.top);
+                enemyY += 2;
+                enemy.style.top = enemyY + 'px';
+
+                if (enemyY > gameArea.offsetHeight) {
+                    gameArea.removeChild(enemy);
+                    enemies.splice(index, 1);
+                    
+                    updateScore();
+                }
+
+                if (enemyY >= gameArea.offsetHeight - 50 && Math.abs(playerX - parseInt(enemy.style.left)) < 40) {
+                    alert('Game Over');
+                    gameOver = true;
+                    gameArea.removeChild(player);
+                }
+            });
+        }
+
+        function shootBullet() {
+            const bullet = document.createElement('div');
+            bullet.classList.add('bullet');
+            bullet.style.top = player.offsetTop + 'px';
+            bullet.style.left = playerX + 17 + 'px';
+            gameArea.appendChild(bullet);
+            bullets.push(bullet);
+        }
+
+        function moveBullets() {
+            bullets.forEach((bullet, index) => {
+                let bulletY = parseInt(bullet.style.top);
+                bulletY -= 5;
+                bullet.style.top = bulletY + 'px';
+
+                if (bulletY < 0) {
+                    gameArea.removeChild(bullet);
+                    bullets.splice(index, 1);
+                }
+
+                enemies.forEach((enemy, enemyIndex) => {
+                    if (bulletY <= parseInt(enemy.style.top) + 40 &&
+                        parseInt(bullet.style.left) >= parseInt(enemy.style.left) &&
+                        parseInt(bullet.style.left) <= parseInt(enemy.style.left) + 40) {
+                        gameArea.removeChild(bullet);
+                        gameArea.removeChild(enemy);
+                        bullets.splice(index, 1);
+                        enemies.splice(enemyIndex, 1);
+                        score=score+1;
+                        updateScore();
+                    }
+                });
+            });
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = 'Score: ' + score;
+        }
+
+        function gameLoop() {
+            moveEnemies();
+            moveBullets();
+            if (!gameOver) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        setInterval(createEnemy,1000000);
+        gameLoop();
+    </script>
+</body>
+</html>
