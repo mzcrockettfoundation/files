@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Ninja Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .fruit {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .fruit::before, .fruit::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .fruit::before {
+            transform: rotate(45deg) translateX(-25px);
+        }
+
+        .fruit::after {
+            transform: rotate(-45deg) translateX(25px);
+        }
+
+        .fruit.sliced::before {
+            transform: rotate(45deg) translateX(-50px) translateY(-50px);
+            opacity: 0;
+        }
+
+        .fruit.sliced::after {
+            transform: rotate(-45deg) translateX(50px) translateY(50px);
+            opacity: 0;
+        }
+
+        .score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="game-container">
+        <div class="score" id="score">Score: 0</div>
+    </div>
+    <script>
+        var gameContainer = document.getElementById('game-container');
+        var scoreDisplay = document.getElementById('score');
+        var score = 0;
+        var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple'];
+        function createFruit() {
+            var fruit = document.createElement('div');
+            fruit.classList.add('fruit');
+          
+            fruit.style.left = Math.random() * window.innerWidth + 'px';
+            fruit.style.top = Math.random() * window.innerHeight + 'px';
+            gameContainer.appendChild(fruit);
+
+            fruit.addEventListener('', function() {
+                score=score-1;
+                scoreDisplay.textContent = 'Score: ' + score;
+                fruit.classList.add('sliced');
+                setTimeout(function() {
+                    fruit.remove();
+                }, 300);
+            });
+
+            setTimeout(function() {
+                if (fruit.parentElement) {
+                    fruit.remove();
+                }
+            }, 3000);
+        }
+
+        setInterval(createFruit, 10);
+    </script>
+</body>
+</html>
